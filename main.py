@@ -12,6 +12,7 @@ file = open(fileName, 'r')
 content = file.readlines()
 
 componentsData = []
+w = 0
 nodals = 0
 modificada = 0
 for i in range(len(content)):
@@ -19,7 +20,7 @@ for i in range(len(content)):
     content[i] = content[i][0:-1] 
     #adiciona uma lista com os dados de cada componente na matriz component
     componentsData += [content[i].split()]
-    #checa a quantidade de nos
+    #checa o tamanho da matriz e a frequencia(w)
     try:
         if float(componentsData[i][1]) > nodals:
             nodals = int(componentsData[i][1])
@@ -29,6 +30,8 @@ for i in range(len(content)):
             modificada += 1
         if componentsData[i][0][0] == ("H"):
             modificada += 2
+        if (componentsData[i][0][0] == "V") or (componentsData[i][0][0] == "I"):
+            w = 2*(np.pi)*float(componentsData[i][6])
     except:
         print("Linha " + str(i) + " não foi reconhecida como um componente")
 
