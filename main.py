@@ -49,8 +49,22 @@ for i in range(len(content)):
 
 
     elif nome == "I": #fonte de corrente independente
-        I[int(componentsData[i][2])] += float(componentsData[i][4]) 
-        I[int(componentsData[i][1])] += -float(componentsData[i][4])
+        if componentsData[i][3] == "DC":
+            I[int(componentsData[i][2])] += float(componentsData[i][4]) 
+            I[int(componentsData[i][1])] += -float(componentsData[i][4])
+
+        elif componentsData[i][3] == "SIN":
+            Ao = componentsData[i][4]
+            A = componentsData[i][5]
+            f = componentsData[i][6]
+            ta = componentsData[i][7]
+            a = componentsData[i][7]
+            fi = componentsData[i][8]
+            pi = np.pi
+            exp = np.exp(-a*(t-ta))
+            valor = Ao + (A*exp) * np.sin(2*pi*f*(t-ta) + (pi/180)*fi)
+            I[int(componentsData[i][2])] += valor
+            I[int(componentsData[i][1])] += -valor
 
     elif nome == "G": #fonte de corrente controlada por tensão
         G[int(componentsData[i][1])][int(componentsData[i][3])] += -float(componentsData[i][5])
@@ -63,31 +77,42 @@ for i in range(len(content)):
         G[int(componentsData[i][1])][int(componentsData[i][2])] += -j*w*float(componentsData[i][3])
         G[int(componentsData[i][2])][int(componentsData[i][1])] += -j*w*float(componentsData[i][3])
         G[int(componentsData[i][2])][int(componentsData[i][2])] += j*w*float(componentsData[i][3])
-        try:
-            I[int(componentsData[i][1])] += float(componentsData[i][4])
-            I[int(componentsData[i][2])] += -float(componentsData[i][4])
-        except:
-            pass
-        
+
     elif nome == "L": #Indutor
         G[int(componentsData[i][1])][int(componentsData[i][1])] += 1/(j*w*float(componentsData[i][3]))
         G[int(componentsData[i][1])][int(componentsData[i][2])] += -1/(j*w*float(componentsData[i][3]))
         G[int(componentsData[i][2])][int(componentsData[i][1])] += -1/(j*w*float(componentsData[i][3]))
         G[int(componentsData[i][2])][int(componentsData[i][2])] += 1/(j*w*float(componentsData[i][3]))
-        try:
-            I[int(componentsData[i][1])] += -float(componentsData[i][4])
-            I[int(componentsData[i][2])] += float(componentsData[i][4])
-        except:
-            pass
+
 
     elif nome == "V": #Fonte de tensao
-        G[int(componentsData[i][1])][nodals + indiceMod] += 1
-        G[int(componentsData[i][2])][nodals + indiceMod] += -1
-        G[nodals + indiceMod][int(componentsData[i][1])] += -1
-        G[nodals + indiceMod][int(componentsData[i][2])] += 1
-        I[nodals + indiceMod] += -float(componentsData[i][4])
-        print("J" + str(indiceMod) + " => " + componentsData[i][0])
-        indiceMod += 1
+        if componentsData[i][3] == "DC":
+            G[int(componentsData[i][1])][nodals + indiceMod] += 1
+            G[int(componentsData[i][2])][nodals + indiceMod] += -1
+            G[nodals + indiceMod][int(componentsData[i][1])] += -1
+            G[nodals + indiceMod][int(componentsData[i][2])] += 1
+            I[nodals + indiceMod] += -float(componentsData[i][4])
+            print("J" + str(indiceMod) + " => " + componentsData[i][0])
+            indiceMod += 1
+        
+        elif componentsData[i][3] == "SIN":
+            Ao = componentsData[i][4]
+            A = componentsData[i][5]
+            f = componentsData[i][6]
+            ta = componentsData[i][7]
+            a = componentsData[i][7]
+            fi = componentsData[i][8]
+            pi = np.pi
+            exp = np.exp(-a*(t-ta))
+            valor = Ao + (A*exp) * np.sin(2*pi*f*(t-ta) + (pi/180)*fi)
+            G[int(componentsData[i][1])][nodals + indiceMod] += 1
+            G[int(componentsData[i][2])][nodals + indiceMod] += -1
+            G[nodals + indiceMod][int(componentsData[i][1])] += -1
+            G[nodals + indiceMod][int(componentsData[i][2])] += 1
+            I[nodals + indiceMod] += -valor
+            print("J" + str(indiceMod) + " => " + componentsData[i][0])
+            indiceMod += 1
+    
 
     elif nome == "E": #Fonte de tensao controlada por tensao
         G[int(componentsData[i][1])][nodals + indiceMod] += 1
@@ -122,6 +147,30 @@ for i in range(len(content)):
         print("J" + str(indiceMod) + " => " + componentsData[i][0] + " Control")
         print("J" + str(indiceMod + 1) + " => " + componentsData[i][0] + " Source")
         indiceMod += 2
+    
+    elif nome == "K": #transformador ideal
+        L1 = componentsData[i][4]
+        L2 = componentsData[i][8]
+        M = componentsData[i][9]
+        L11 = L2/(L1*L2 - (M^2))
+        L22 = L1/(L1*L2 - (M^2))
+        L12 = -M/(L1*L2 - (M^2))
+        G[int(componentsData[i][2])][int(componentsData[i][2])] += L11/(j*w)
+        G[int(componentsData[i][2])][int(componentsData[i][3])] += -L11/(j*w)
+        G[int(componentsData[i][2])][int(componentsData[i][6])] += L12/(j*w)
+        G[int(componentsData[i][2])][int(componentsData[i][7])] += -L12/(j*w)
+        G[int(componentsData[i][3])][int(componentsData[i][2])] += -L11/(j*w)
+        G[int(componentsData[i][3])][int(componentsData[i][3])] += L11/(j*w)
+        G[int(componentsData[i][3])][int(componentsData[i][6])] += -L12/(j*w)
+        G[int(componentsData[i][3])][int(componentsData[i][7])] += L12/(j*w)
+        G[int(componentsData[i][6])][int(componentsData[i][2])] += L12/(j*w)
+        G[int(componentsData[i][6])][int(componentsData[i][3])] += -L12/(j*w)
+        G[int(componentsData[i][6])][int(componentsData[i][6])] += L22/(j*w)
+        G[int(componentsData[i][6])][int(componentsData[i][7])] += -L22/(j*w)
+        G[int(componentsData[i][7])][int(componentsData[i][2])] += -L12/(j*w)
+        G[int(componentsData[i][7])][int(componentsData[i][3])] += L12/(j*w)
+        G[int(componentsData[i][7])][int(componentsData[i][6])] += -L22/(j*w)
+        G[int(componentsData[i][7])][int(componentsData[i][7])] += L22/(j*w)
 
 #transformas as matrizes em arrays do numpy
 G = np.array(G)
