@@ -14,7 +14,7 @@ file = open(fileName, 'r')
 content = file.readlines()
 
 componentsData = []
-w = 2*(np.pi)
+w = 1
 nodals = 0
 modificada = 0
 regSen = False
@@ -48,7 +48,7 @@ for i in range(len(componentsData)):
             modificada += 2
         if (componentsData[i][0][0] == "V") or (componentsData[i][0][0] == "I"):
             if componentsData[i][3] == "SIN":
-                w = 2*(np.pi)*complex(componentsData[i][6])
+                w = complex(componentsData[i][6])
                 regSen = True
     except:
         print("Linha " + str(i) + " não foi reconhecida como um componente")
@@ -90,21 +90,21 @@ for i in range(len(content)):
             I[int(componentsData[i][1])] += -fasor
 
     elif nome == "G": #fonte de corrente controlada por tensão
-        G[int(componentsData[i][1])][int(componentsData[i][3])] += -complex(componentsData[i][5])
-        G[int(componentsData[i][1])][int(componentsData[i][4])] += complex(componentsData[i][5])
-        G[int(componentsData[i][2])][int(componentsData[i][3])] += complex(componentsData[i][5])
-        G[int(componentsData[i][2])][int(componentsData[i][4])] += -complex(componentsData[i][5])
+        G[int(componentsData[i][1])][int(componentsData[i][3])] += complex(componentsData[i][5])
+        G[int(componentsData[i][1])][int(componentsData[i][4])] += -complex(componentsData[i][5])
+        G[int(componentsData[i][2])][int(componentsData[i][3])] += -complex(componentsData[i][5])
+        G[int(componentsData[i][2])][int(componentsData[i][4])] += complex(componentsData[i][5])
 
     elif nome == "C": #Capacitor
         G[int(componentsData[i][1])][int(componentsData[i][1])] += complex(1j*w*complex(componentsData[i][3]))
-        G[int(componentsData[i][1])][int(componentsData[i][2])] += complex(-1j*w*complex(componentsData[i][3]))
-        G[int(componentsData[i][2])][int(componentsData[i][1])] += complex(-1j*w*complex(componentsData[i][3]))
+        G[int(componentsData[i][1])][int(componentsData[i][2])] += -complex(1j*w*complex(componentsData[i][3]))
+        G[int(componentsData[i][2])][int(componentsData[i][1])] += -complex(1j*w*complex(componentsData[i][3]))
         G[int(componentsData[i][2])][int(componentsData[i][2])] += complex(1j*w*complex(componentsData[i][3]))
 
     elif nome == "L": #Indutor
         G[int(componentsData[i][1])][int(componentsData[i][1])] += complex(1/(1j*w*complex(componentsData[i][3])))
-        G[int(componentsData[i][1])][int(componentsData[i][2])] += complex(-1/(1j*w*complex(componentsData[i][3])))
-        G[int(componentsData[i][2])][int(componentsData[i][1])] += complex(-1/(1j*w*complex(componentsData[i][3])))
+        G[int(componentsData[i][1])][int(componentsData[i][2])] += -complex(1/(1j*w*complex(componentsData[i][3])))
+        G[int(componentsData[i][2])][int(componentsData[i][1])] += -complex(1/(1j*w*complex(componentsData[i][3])))
         G[int(componentsData[i][2])][int(componentsData[i][2])] += complex(1/(1j*w*complex(componentsData[i][3])))
 
 
@@ -180,22 +180,22 @@ for i in range(len(content)):
         L11 = L2/(L1*L2 - (M*M))
         L22 = L1/(L1*L2 - (M*M))
         L12 = -M/(L1*L2 - (M*M))
-        G[int(componentsData[i][2])][int(componentsData[i][2])] += L11/(1j*w)
-        G[int(componentsData[i][2])][int(componentsData[i][3])] += -L11/(1j*w)
-        G[int(componentsData[i][2])][int(componentsData[i][6])] += L12/(1j*w)
-        G[int(componentsData[i][2])][int(componentsData[i][7])] += -L12/(1j*w)
-        G[int(componentsData[i][3])][int(componentsData[i][2])] += -L11/(1j*w)
-        G[int(componentsData[i][3])][int(componentsData[i][3])] += L11/(1j*w)
-        G[int(componentsData[i][3])][int(componentsData[i][6])] += -L12/(1j*w)
-        G[int(componentsData[i][3])][int(componentsData[i][7])] += L12/(1j*w)
-        G[int(componentsData[i][6])][int(componentsData[i][2])] += L12/(1j*w)
-        G[int(componentsData[i][6])][int(componentsData[i][3])] += -L12/(1j*w)
-        G[int(componentsData[i][6])][int(componentsData[i][6])] += L22/(1j*w)
-        G[int(componentsData[i][6])][int(componentsData[i][7])] += -L22/(1j*w)
-        G[int(componentsData[i][7])][int(componentsData[i][2])] += -L12/(1j*w)
-        G[int(componentsData[i][7])][int(componentsData[i][3])] += L12/(1j*w)
-        G[int(componentsData[i][7])][int(componentsData[i][6])] += -L22/(1j*w)
-        G[int(componentsData[i][7])][int(componentsData[i][7])] += L22/(1j*w)
+        G[int(componentsData[i][2])][int(componentsData[i][2])] += complex(L11/(1j*w))
+        G[int(componentsData[i][2])][int(componentsData[i][3])] += -complex(L11/(1j*w))
+        G[int(componentsData[i][2])][int(componentsData[i][6])] += complex(L12/(1j*w))
+        G[int(componentsData[i][2])][int(componentsData[i][7])] += -complex(L12/(1j*w))
+        G[int(componentsData[i][3])][int(componentsData[i][2])] += -complex(L11/(1j*w))
+        G[int(componentsData[i][3])][int(componentsData[i][3])] += complex(L11/(1j*w))
+        G[int(componentsData[i][3])][int(componentsData[i][6])] += -complex(L12/(1j*w))
+        G[int(componentsData[i][3])][int(componentsData[i][7])] += complex(L12/(1j*w))
+        G[int(componentsData[i][6])][int(componentsData[i][2])] += complex(L12/(1j*w))
+        G[int(componentsData[i][6])][int(componentsData[i][3])] += -complex(L12/(1j*w))
+        G[int(componentsData[i][6])][int(componentsData[i][6])] += complex(L22/(1j*w))
+        G[int(componentsData[i][6])][int(componentsData[i][7])] += -complex(L22/(1j*w))
+        G[int(componentsData[i][7])][int(componentsData[i][2])] += -complex(L12/(1j*w))
+        G[int(componentsData[i][7])][int(componentsData[i][3])] += complex(L12/(1j*w))
+        G[int(componentsData[i][7])][int(componentsData[i][6])] += -complex(L22/(1j*w))
+        G[int(componentsData[i][7])][int(componentsData[i][7])] += complex(L22/(1j*w))
 
 #transformas as matrizes em arrays do numpy
 G = np.array(G)
@@ -224,12 +224,26 @@ else:
         V = str(E[i])
         for n in range (len(V) - 1):
             if parentesesInicial == 1:
-                if (((str(V[n]) == "-")  or (str(V[n]) == "+")) and str(V[n-1]) != "e"):
-                    signCount += 1
-                if signCount == 2:
-                    img += str(V[n])
+                if str(V[1]) == "-":
+                    if ((str(V[n]) == "-")  or (str(V[n]) == "+")):
+                        if signCount == 0:
+                            real += str(V[n])
+                            signCount += 1
+                        elif signCount == 1:
+                            img += str(V[n])
+                            signCount +=1
+                    elif signCount == 2:
+                        img += str(V[n])
+                    else:
+                        real += str(V[n])
                 else:
-                    real += str(V[n])
+                    if ((str(V[n]) == "-")  or (str(V[n]) == "+")):
+                        img += str(V[n])
+                        signCount += 1
+                    elif signCount == 1:
+                        img += str(V[n])
+                    else:
+                        real += str(V[n])
             else:
                 parentesesInicial += 1
         if img[0] == "-":
