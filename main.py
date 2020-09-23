@@ -14,7 +14,7 @@ file = open(fileName, 'r')
 content = file.readlines()
 
 componentsData = []
-w = 1
+w = 2*(np.pi)
 nodals = 0
 modificada = 0
 regSen = False
@@ -209,12 +209,12 @@ I = np.delete(I, 0)
 
 #resolve o sistema linear
 E = np.linalg.solve(G, I)
+print(E)
 
 #printa os valores das tensões nodais
-#if regSen == False:
-for i in range (nodals):
-    print("V" + str(i+1) + "= " + str(E[i]))
-'''
+if regSen == False:
+    for i in range (nodals):
+        print("V" + str(i+1) + "= " + str(E[i]))
 else:
     for i in range (nodals):
         parentesesInicial = 0
@@ -233,11 +233,11 @@ else:
             else:
                 parentesesInicial += 1
         if img[0] == "-":
-            img[0] = "+"
+            img = "+" + img[1:]
         else:
-            img[0] = "-"
+            img = "-" + img[1:]
         print("V" + str(i+1) + "= " + real + "*cos(" + str(w) + "*t)" + img + "*sin(" + str(w) + "*t")
-'''
+
 
 
 
