@@ -8,8 +8,8 @@ Funcionamento:
 5) $python main.py
 
 Componentes:
-- Fonte de Corrente independente
-- Fonte de Tensão independente
+- Fonte de Corrente independente (DC e SIN)
+- Fonte de Tensão independente (DC e SIN)
 - Fonte de Corrente controlada por tensão
 - Fonte de Corrente controlada por corrente
 - Fonte de Tensão controlada por tensão
@@ -17,3 +17,5 @@ Componentes:
 - Resistor
 - Capacitor
 - Indutor
+- Transformador ideal
+- Amplificador Operacional Ideal

@@ -42,7 +42,10 @@ for i in range(len(componentsData)):
                 nodals = int(componentsData[i][1])
             if int(componentsData[i][2]) > nodals:
                 nodals = int(componentsData[i][2])
-        if (componentsData[i][0][0] == "V") or (componentsData[i][0][0] == "E") or (componentsData[i][0][0] == "H"):
+        if ((componentsData[i][0][0] == "V") or 
+            (componentsData[i][0][0] == "E") or 
+            (componentsData[i][0][0] == "O") or
+            (componentsData[i][0][0] == "H")):
             modificada += 1
         if componentsData[i][0][0] == "H":
             modificada += 2
@@ -84,8 +87,8 @@ for i in range(len(content)):
             pi = sp.pi
             exp = sp.exp(-a*(t-ta))
             #valor = Ao + (A*exp) * sp.sin(2*pi*f*(t-ta) + (pi/180)*fi)
-            fase = (pi/180) * fi
-            fasor = A*(sp.cos(fase)+1j*sp.sin(fase))
+            #fase = (pi/180) * fi
+            fasor = A*(np.exp(1j*fi))
             I[int(componentsData[i][2])] += fasor
             I[int(componentsData[i][1])] += -fasor
 
@@ -128,8 +131,8 @@ for i in range(len(content)):
             pi = sp.pi
             exp = sp.exp((-1)*a*(t-ta))
             #valor = Ao + (A*exp) * sp.sin(2*pi*f*(t-ta) + (pi/180)*fi)
-            fase = (pi/180) * fi
-            fasor = A*(sp.cos(fase)+1j*sp.sin(fase))
+            #fase = (pi/180) * fi
+            fasor = A*(np.exp(1j*fi))
             G[int(componentsData[i][1])][nodals + indiceMod] += 1
             G[int(componentsData[i][2])][nodals + indiceMod] += -1
             G[nodals + indiceMod][int(componentsData[i][1])] += -1
@@ -197,6 +200,14 @@ for i in range(len(content)):
         G[int(componentsData[i][7])][int(componentsData[i][6])] += -complex(L22/(1j*w))
         G[int(componentsData[i][7])][int(componentsData[i][7])] += complex(L22/(1j*w))
 
+    elif nome == "O": #Amp Op ideal
+        G[int(componentsData[i][1])][nodals + indiceMod + 1] += 1
+        G[int(componentsData[i][2])][nodals + indiceMod + 1] += -1
+        G[nodals + indiceMod + 1][int(componentsData[i][3])] += 1
+        G[nodals + indiceMod + 1][int(componentsData[i][4])] += -1
+        print("J" + str(indiceMod) + " => " + componentsData[i][0])
+        indiceMod += 1
+
 #transformas as matrizes em arrays do numpy
 G = np.array(G)
 I = np.array(I)
@@ -213,44 +224,28 @@ print(E)
 
 #printa os valores das tensões nodais
 if regSen == False:
-    for i in range (nodals):
-        print("V" + str(i+1) + "= " + str(E[i]))
+    real = np.real(E)
+    for i in range(nodals):
+        print("V" + str(i+1) + "= " + str(real[i]))
+    for i in range(modificada):
+        print("J" + str(i+1) + "= " + str(real[nodals + i]))
 else:
+    real = np.real(E)
+    img = np.imag(E)
+    mod = np.abs(E)
+    angle = np.angle(E)
     for i in range (nodals):
-        parentesesInicial = 0
-        signCount = 0
-        real = ""
-        img = ""
-        V = str(E[i])
-        for n in range (len(V) - 1):
-            if parentesesInicial == 1:
-                if str(V[1]) == "-":
-                    if ((str(V[n]) == "-")  or (str(V[n]) == "+")):
-                        if signCount == 0:
-                            real += str(V[n])
-                            signCount += 1
-                        elif signCount == 1:
-                            img += str(V[n])
-                            signCount +=1
-                    elif signCount == 2:
-                        img += str(V[n])
-                    else:
-                        real += str(V[n])
-                else:
-                    if ((str(V[n]) == "-")  or (str(V[n]) == "+")):
-                        img += str(V[n])
-                        signCount += 1
-                    elif signCount == 1:
-                        img += str(V[n])
-                    else:
-                        real += str(V[n])
-            else:
-                parentesesInicial += 1
-        if img[0] == "-":
-            img = "+" + img[1:]
-        else:
-            img = "-" + img[1:]
-        print("V" + str(i+1) + "= " + real + "*cos(" + str(w) + "*t)" + img + "*sin(" + str(w) + "*t")
+        print("V" + str(i+1))
+        print("real=" + str(real[i]))
+        print("img=" + str(img[i]))
+        print("mod=" + str(mod[i]))
+        print("angle=" + str(angle[i]))
+    for i in range (modificada):
+        print("J" + str(i+1))
+        print("real=" + str(real[nodals + i]))
+        print("img=" + str(img[nodals + i]))
+        print("mod=" + str(mod[nodals + i]))
+        print("angle=" + str(angle[nodals + i]))
 
 
 
