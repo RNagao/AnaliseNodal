@@ -1,4 +1,4 @@
-import sympy as sp
+#import sympy as sp
 import numpy as np
 
 
@@ -18,7 +18,6 @@ w = 1
 nodals = 0
 modificada = 0
 regSen = False
-t = sp.Symbol("t")
 for i in range(len(content)):
     #remover final \n das linhas do content
     content[i] = content[i][0:-1] 
@@ -78,14 +77,14 @@ for i in range(len(content)):
             I[int(componentsData[i][1])] += -complex(componentsData[i][4])
 
         elif componentsData[i][3] == "SIN":
-            Ao = complex(componentsData[i][4])
+            #Ao = complex(componentsData[i][4])
             A = complex(componentsData[i][5])
-            f = complex(componentsData[i][6])
-            ta = complex(componentsData[i][7])
-            a = complex(componentsData[i][7])
+            #f = complex(componentsData[i][6])
+            #ta = complex(componentsData[i][7])
+            #a = complex(componentsData[i][7])
             fi = complex(componentsData[i][8])
-            pi = sp.pi
-            exp = sp.exp(-a*(t-ta))
+            #pi = np.pi
+            #exp = np.exp(-a*(t-ta))
             #valor = Ao + (A*exp) * sp.sin(2*pi*f*(t-ta) + (pi/180)*fi)
             #fase = (pi/180) * fi
             fasor = A*(np.exp(1j*fi))
@@ -122,14 +121,14 @@ for i in range(len(content)):
             indiceMod += 1
         
         elif componentsData[i][3] == "SIN":
-            Ao = complex(componentsData[i][4])
+            #Ao = complex(componentsData[i][4])
             A = complex(componentsData[i][5])
-            f = complex(componentsData[i][6])
-            ta = complex(componentsData[i][7])
-            a = complex(componentsData[i][7])
+            #f = complex(componentsData[i][6])
+            #ta = complex(componentsData[i][7])
+            #a = complex(componentsData[i][7])
             fi = complex(componentsData[i][8])
-            pi = sp.pi
-            exp = sp.exp((-1)*a*(t-ta))
+            #pi = np.pi
+            #exp = np.exp((-1)*a*(t-ta))
             #valor = Ao + (A*exp) * sp.sin(2*pi*f*(t-ta) + (pi/180)*fi)
             #fase = (pi/180) * fi
             fasor = A*(np.exp(1j*fi))
